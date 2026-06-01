@@ -1,0 +1,797 @@
+Berikut adalah kode HTML yang telah diperbarui dengan animasi loading saat pengecekan, diikuti dengan efek confetti dan tampilan kelulusan yang meriah.
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Pengumuman Kelulusan - SDN 104234 Medan Senembah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #08142a 0%, #091825 38%, #03050a 100%);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            padding: 2rem 1rem;
+            color: #eef1f4;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 18% 14%, rgba(255,255,255,0.14), transparent 18%),
+                              radial-gradient(circle at 82% 20%, rgba(255,215,90,0.18), transparent 14%),
+                              radial-gradient(circle at 52% 82%, rgba(255,255,255,0.08), transparent 18%);
+            pointer-events: none;
+            opacity: 0.8;
+            z-index: 0;
+        }
+
+        .announcement-container {
+            max-width: 760px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Kop surat & header sekolah */
+        .official-header {
+            position: relative;
+            background: linear-gradient(135deg, rgba(10, 20, 38, 0.95), rgba(14, 28, 53, 0.94));
+            border-radius: 44px;
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 30px 80px -36px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+            margin-bottom: 1.8rem;
+            border: 1px solid rgba(255,215,120,0.16);
+        }
+
+        .official-header::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: calc(100% - 3rem);
+            height: 1px;
+            background: rgba(255,255,255,0.12);
+            transform: translateX(-50%);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 20% 20%, #ffe485, #f3b33d 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #1c2a2f;
+            box-shadow: 0 14px 32px rgba(0,0,0,0.24);
+        }
+
+        .kop-text {
+            text-align: center;
+        }
+
+        .kop-text h3 {
+            font-size: 0.95rem;
+            color: #f7e9b3;
+            letter-spacing: 1.2px;
+            text-shadow: 0 0 10px rgba(255,243,191,0.12);
+        }
+
+        .kop-text h2 {
+            font-size: 1.4rem;
+            color: #f8f2d0;
+            margin: 6px 0;
+        }
+
+        .kop-text p {
+            font-size: 0.78rem;
+            color: #d4d7dd;
+        }
+
+        .sekolah-nama {
+            font-weight: 900;
+            font-size: 1.95rem;
+            margin-top: 0.75rem;
+            background: linear-gradient(135deg, #f9d76d, #f5b142);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-kelulusan {
+            background: rgba(255, 214, 96, 0.18);
+            backdrop-filter: blur(10px);
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 999px;
+            color: #fff8d3;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 14px;
+            letter-spacing: 1.1px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        /* Kartu Pencarian NISN */
+        .search-card {
+            background: rgba(9, 18, 31, 0.92);
+            border-radius: 48px;
+            padding: 2rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.24);
+            border: 1px solid rgba(255,215,105,0.16);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            backdrop-filter: blur(14px);
+        }
+
+        .search-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 26px 64px rgba(0,0,0,0.28);
+        }
+
+        .search-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f9e79f;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 0 8px rgba(255, 232, 157, 0.2);
+        }
+
+        .nisn-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .nisn-input-group label {
+            font-weight: 600;
+            color: #e8e4d8;
+            font-size: 0.95rem;
+        }
+
+        .nisn-input-group input {
+            padding: 16px 22px;
+            font-size: 1rem;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 60px;
+            outline: none;
+            transition: 0.25s ease;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.08);
+            color: #f4f5f7;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+        }
+
+        .nisn-input-group input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .nisn-input-group input:focus {
+            border-color: rgba(255,215,0,0.6);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.12);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cari {
+            background: linear-gradient(95deg, #f7cd4b, #e79a20);
+            color: #1f1a10;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 24px rgba(231, 141, 32, 0.25);
+        }
+
+        .btn-cari:active {
+            transform: scale(0.97);
+        }
+
+        .btn-reset {
+            background: rgba(255,255,255,0.12);
+            color: #f4f5f7;
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 14px 22px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255,255,255,0.24);
+            border-color: rgba(255,255,255,0.35);
+        }
+
+        /* Animasi Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s;
+        }
+
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .loader-container {
+            text-align: center;
+            background: rgba(10, 20, 38, 0.95);
+            padding: 2rem 2.5rem;
+            border-radius: 60px;
+            border: 1px solid rgba(255,215,120,0.5);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+        }
+
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255,215,120,0.2);
+            border-top: 5px solid #f9d76d;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-container p {
+            color: #ffefb9;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+
+        /* Kartu Hasil Kelulusan */
+        .result-card {
+            background: linear-gradient(180deg, rgba(9, 15, 30, 0.96), rgba(5, 9, 18, 0.96));
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 30px 70px -26px rgba(0,0,0,0.72);
+            display: none;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,215,120,0.18);
+            position: relative;
+        }
+
+        .result-card.show-glow {
+            animation: glowPulse 0.6s ease-out;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.4); border-color: rgba(255,215,0,0.3);}
+            50% { box-shadow: 0 0 0 12px rgba(255,215,0,0.2); border-color: rgba(255,215,0,0.8);}
+            100% { box-shadow: 0 30px 70px -26px rgba(0,0,0,0.72); border-color: rgba(255,215,120,0.18);}
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .result-header {
+            background: linear-gradient(98deg, #b5892e, #f9e179 45%, #9d6b21);
+            padding: 1.4rem 1.6rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .result-header::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -8px;
+            width: 160px;
+            height: 4px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 999px;
+            transform: translateX(-50%);
+        }
+
+        .result-header h3 {
+            color: #1b2d3d;
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+        }
+
+        .result-header h2 {
+            color: #0f1c2a;
+            font-size: 1.95rem;
+            margin-top: 6px;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.18);
+        }
+
+        .result-body {
+            padding: 2.2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .student-name {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f8de7e, #f5b23d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+            text-shadow: 0 2px 18px rgba(255,223,123,0.16);
+        }
+
+        .nisn-info {
+            background: rgba(255,255,255,0.08);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            color: #f6f4e8;
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+
+        .lulus-badge {
+            background: linear-gradient(135deg, #ffd95a, #e8a12d);
+            color: #1e1a11;
+            font-size: 1.7rem;
+            font-weight: 800;
+            padding: 14px 30px;
+            border-radius: 90px;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            margin: 24px 0;
+            box-shadow: 0 18px 35px rgba(232, 161, 45, 0.24);
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+        
+        .result-card.show-glow .lulus-badge {
+            animation: badgePop 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .tahun-ajaran {
+            margin-top: 20px;
+            color: #d7d6dd;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            padding-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .signature-area {
+            background: rgba(255,255,255,0.08);
+            margin-top: 22px;
+            padding: 1.2rem 1.4rem;
+            border-radius: 34px;
+            font-size: 0.82rem;
+            text-align: center;
+            color: #f2efdf;
+            border: 1px solid rgba(255,215,120,0.16);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+        }
+
+        .signature-area strong {
+            color: #fff7d4;
+        }
+
+        .error-message {
+            background: rgba(255, 87, 95, 0.12);
+            color: #ffd6d7;
+            padding: 1rem;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+            border: 1px solid rgba(255, 87, 95, 0.25);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: rgba(255,255,255,0.82);
+            font-size: 0.78rem;
+            margin-top: 1rem;
+            opacity: 0.95;
+            line-height: 1.7;
+        }
+
+        .official-stamp {
+            font-size: 0.72rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 0.4rem 1rem;
+            display: inline-block;
+            color: #fff8d4;
+            letter-spacing: 0.4px;
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+        
+        canvas.confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+<div class="announcement-container">
+    <!-- Header kop surat resmi -->
+    <div class="official-header">
+        <div class="logo-area">
+            <div class="logo-placeholder">
+                🎓
+            </div>
+            <div class="kop-text">
+                <h3>PEMERINTAH KABUPATEN DELI SERDANG</h3>
+                <h2>DINAS PENDIDIKAN</h2>
+                <p>UPT SATUAN PENDIDIKAN FORMAL SDN 104234 MEDAN SENEMBAH</p>
+                <p>Jalan Pasar XV Desa Medan Senembah Kec.Tanjung Morawa Kode Pos 20362</p>
+            </div>
+        </div>
+        <div class="sekolah-nama">
+            SD NEGERI 104234 MEDAN SENEMBAH
+        </div>
+        <div class="badge-kelulusan">
+            ✨ PENGUMUMAN KELULUSAN TAHUN AJARAN 2025/2026 ✨
+        </div>
+    </div>
+
+    <!-- Panel Pencarian NISN -->
+    <div class="search-card">
+        <div class="search-title">
+            🔍 CEK KELULUSAN RESMI
+        </div>
+        <div class="nisn-input-group">
+            <label>Masukkan NISN (Nomor Induk Siswa Nasional) :</label>
+            <input type="text" id="nisnInput" placeholder="Contoh: 0135624450 atau 3149792548" maxlength="12" autocomplete="off">
+            <div class="button-group">
+                <button class="btn-cari" id="cariBtn">
+                    📋 PERIKSA KELULUSAN
+                </button>
+                <button class="btn-reset" id="resetBtn">
+                    ↺ Bersihkan
+                </button>
+            </div>
+            <div id="errorBox" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Hasil Kelulusan (default hidden) -->
+    <div id="resultCard" class="result-card">
+        <div class="result-header">
+            <h3>⚡ KEPUTUSAN KELULUSAN ⚡</h3>
+            <h2>Nomor: 421.2/42/PD/2026</h2>
+        </div>
+        <div class="result-body">
+            <div style="font-size:0.9rem; color:#b6c8e0; margin-bottom:6px;">Berdasarkan Hasil Rapat Dewan Guru</div>
+            <div class="student-name" id="namaSiswa">-</div>
+            <div class="nisn-info" id="nisnDisplay">NISN: -</div>
+            <div class="lulus-badge" id="lulusBadge">
+                ✅ LULUS
+                <span style="font-size:1rem;">🎉</span>
+            </div>
+            <div class="tahun-ajaran">
+                <strong>✅ Telah menyelesaikan seluruh program pembelajaran kelas VI</strong><br>
+                Berdasarkan Surat Keputusan Kepala Sekolah SD Negeri 104234 Medan Senembah
+            </div>
+            <div class="signature-area">
+                <div>Ditetapkan di: Tanjung Morawa</div>
+                <div>Pada tanggal: 2 Juni 2026</div>
+                <div style="margin-top:12px;">Plt. Kepala UPT SPF SD Negeri 104234</div>
+                <div><strong>WIDA CAHYATI, S.Pd., Gr</strong></div>
+                <div>NIP.199409212022212008</div>
+                <div style="margin-top:8px;" class="official-stamp">Dokumen Sah - Pengumuman Resmi</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        📌 Pengumuman resmi berdasarkan Keputusan Kepala Sekolah Nomor 421.2/42/PD/2026 tentang Penetapan Kelulusan.<br>
+        Seluruh siswa yang terdaftar dinyatakan LULUS 100% sesuai daftar kelulusan resmi.
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loader-container">
+        <div class="spinner"></div>
+        <p>⚡ Memeriksa Data Kelulusan ⚡</p>
+        <p style="font-size:0.8rem; margin-top:8px;">Sistem sedang memverifikasi NISN...</p>
+    </div>
+</div>
+
+<script>
+    // ===============================================================
+    // DATA KELULUSAN RESMI SDN 104234 MEDAN SENEMBAH (40 siswa LULUS)
+    // ===============================================================
+    const studentsData = [
+        { nisn: "0135624450", nama: "AISYAH NUR ALIFAH" }, { nisn: "0139759614", nama: "ARYA SAZALI" },
+        { nisn: "0149801348", nama: "ENGGAR OLSHI LESMANA" }, { nisn: "3149792548", nama: "JANATU SAUKIA" },
+        { nisn: "3132275273", nama: "KEYLA ZAHARA HALAWA" }, { nisn: "3130375882", nama: "LEANKA VIONA LITA PURBA" },
+        { nisn: "3149427654", nama: "M. LUQMAN AZZAM" }, { nisn: "0148244307", nama: "MARIA KRISTINA" },
+        { nisn: "3139667223", nama: "MARSHA RAMANDHA SAFITRI" }, { nisn: "3149539597", nama: "MUHAMMAD AKBAR ARPANDI" },
+        { nisn: "3137284912", nama: "MUHAMMAD ALFIANSYAH" }, { nisn: "3131196845", nama: "MUHAMMAD RAVA" },
+        { nisn: "0143162547", nama: "MUTIARA ANDIKA" }, { nisn: "0144593386", nama: "NATANIA ANGELITA BR TAMBA" },
+        { nisn: "0145256723", nama: "NATHANIA OCTARIA BR SITINJAK" }, { nisn: "0141525978", nama: "REY VANO AGUSTIAR SARAGIH" },
+        { nisn: "0134587892", nama: "RIZKI RAHADIAH SYAHPUTRA" }, { nisn: "3147420943", nama: "RIZQI AKBAR AL FAIRUZ" },
+        { nisn: "3140092931", nama: "TRISTAN JULIO TARIGAN" }, { nisn: "0133787570", nama: "ALVARO CHRISTIAN RAFAEL SIHOMBING" },
+        { nisn: "0148477951", nama: "ANISA D'VORA SITANGGANG" }, { nisn: "0142831305", nama: "CLARA NATHANIA SIJABAT" },
+        { nisn: "3138391554", nama: "DANIEL JERICO TAMPUBOLON" }, { nisn: "0148892211", nama: "FILLISIANI ZEGA" },
+        { nisn: "3137616093", nama: "GRACHILLA APRILIA PUTRI SIHOMBING" }, { nisn: "0144554618", nama: "HABIBI AZHAR" },
+        { nisn: "3137849489", nama: "HAURA NISA" }, { nisn: "3137767585", nama: "JUAN MATHIAS SIMANJUNTAK" },
+        { nisn: "0149263090", nama: "KEVIN BIMA ADRIANO" }, { nisn: "3139039673", nama: "MARSYA RAMADHANI" },
+        { nisn: "0134771016", nama: "MUHAMMAD AKBAR HALLINTAR" }, { nisn: "3147111262", nama: "MUHAMMAD IKRAM" },
+        { nisn: "3132641307", nama: "MUHAMMAD RAVI" }, { nisn: "3146283005", nama: "RASYA HURAIRAH" },
+        { nisn: "0142472152", nama: "REFAN DUWIYANDIKA" }, { nisn: "3132794356", nama: "RIDHO FADILLAH FADLI" },
+        { nisn: "3138826187", nama: "SATRIA SAFARIANSYAH" }, { nisn: "0133639356", nama: "SHANAYA PUTRI BR BATU BARA" },
+        { nisn: "0156623744", nama: "SITI NAZWA AZ-ZAHRA" }, { nisn: "3146901943", nama: "VIOLA AL-LIZA" }
+    ];
+
+    const studentMap = new Map();
+    studentsData.forEach(s => studentMap.set(s.nisn, s.nama));
+
+    // DOM Elements
+    const nisnInput = document.getElementById('nisnInput');
+    const cariBtn = document.getElementById('cariBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultCard = document.getElementById('resultCard');
+    const namaSiswaSpan = document.getElementById('namaSiswa');
+    const nisnDisplaySpan = document.getElementById('nisnDisplay');
+    const errorBox = document.getElementById('errorBox');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+
+    // Confetti sederhana (efek meriah)
+    let activeConfetti = null;
+
+    function startConfetti() {
+        if (activeConfetti) {
+            activeConfetti.reset();
+            activeConfetti = null;
+        }
+        const canvas = confettiCanvas;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const colors = ['#ffd966', '#f9b43a', '#ffec80', '#ffaa33', '#ffe0a3', '#f5c542'];
+        let animationId = null;
+
+        for (let i = 0; i < 160; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 4,
+                speedY: Math.random() * 5 + 4,
+                speedX: (Math.random() - 0.5) * 2.5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 12
+            });
+        }
+
+        function drawConfetti() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let stillActive = false;
+            for (let p of particles) {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotSpeed;
+                if (p.y < canvas.height + 40) stillActive = true;
+                if (p.y > canvas.height + 100) continue;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size/2, -p.size/3, p.size, p.size * 0.7);
+                ctx.restore();
+            }
+            if (stillActive) {
+                animationId = requestAnimationFrame(drawConfetti);
+            } else {
+                cancelAnimationFrame(animationId);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                activeConfetti = null;
+            }
+        }
+        drawConfetti();
+        activeConfetti = { reset: () => { if(animationId) cancelAnimationFrame(animationId); ctx.clearRect(0,0,canvas.width,canvas.height); } };
+        setTimeout(() => {
+            if (activeConfetti) {
+                if(animationId) cancelAnimationFrame(animationId);
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                activeConfetti = null;
+            }
+        }, 3800);
+    }
+
+    // Helper untuk menampilkan hasil kelulusan dengan animasi loading dan confetti
+    function displayGraduationWithCelebration(nisn, fullName) {
+        // Tampilkan kartu hasil dengan data
+        namaSiswaSpan.innerText = fullName;
+        nisnDisplaySpan.innerText = `NISN: ${nisn}`;
+        errorBox.style.display = 'none';
+        resultCard.style.display = 'block';
+        
+        // Hapus class glow dulu lalu re-add untuk efek animasi
+        resultCard.classList.remove('show-glow');
+        void resultCard.offsetWidth; // force reflow
+        resultCard.classList.add('show-glow');
+        
+        // Scroll halus ke hasil
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Mulai konfeti meriah
+        startConfetti();
+        
+        // Efek suara tidak diperlukan agar tidak mengganggu, namun visual sudah meriah
+    }
+    
+    function showErrorMessage(message) {
+        errorBox.innerText = message;
+        errorBox.style.display = 'block';
+        resultCard.style.display = 'none';
+        namaSiswaSpan.innerText = '-';
+        nisnDisplaySpan.innerText = 'NISN: -';
+        if (activeConfetti) {
+            activeConfetti.reset();
+            activeConfetti = null;
+        }
+        const ctx = confettiCanvas.getContext('2d');
+        if(ctx) ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+    
+    function resetSearch() {
+        nisnInput.value = '';
+        errorBox.style.display = 'none';
+        resultCard.style.display = 'none';
+        namaSiswaSpan.innerText = '-';
+        nisnDisplaySpan.innerText = 'NISN: -';
+        if (activeConfetti) {
+            activeConfetti.reset();
+            activeConfetti = null;
+        }
+        const ctx = confettiCanvas.getContext('2d');
+        if(ctx) ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        nisnInput.focus();
+    }
+    
+    // Proses pengecekan dengan animasi loading
+    function searchWithAnimation() {
+        let rawNisn = nisnInput.value.trim();
+        if (rawNisn === "") {
+            showErrorMessage("⚠️ Silakan masukkan NISN siswa terlebih dahulu.");
+            return;
+        }
+        let cleanedNisn = rawNisn.replace(/\s/g, '');
+        if (!/^\d+$/.test(cleanedNisn)) {
+            showErrorMessage("❌ NISN harus berupa angka. Contoh: 0135624450");
+            return;
+        }
+        
+        // Aktifkan loading overlay
+        loadingOverlay.classList.add('active');
+        // Disable tombol sementara untuk UX
+        cariBtn.disabled = true;
+        
+        // Simulasi proses validasi selama 1.2 detik (animasi loading)
+        setTimeout(() => {
+            loadingOverlay.classList.remove('active');
+            cariBtn.disabled = false;
+            
+            if (studentMap.has(cleanedNisn)) {
+                const namaLengkap = studentMap.get(cleanedNisn);
+                displayGraduationWithCelebration(cleanedNisn, namaLengkap);
+            } else {
+                showErrorMessage(`❌ NISN ${cleanedNisn} tidak ditemukan dalam daftar kelulusan resmi SDN 104234 Medan Senembah. Pastikan NISN yang dimasukkan sesuai.`);
+            }
+        }, 1200);
+    }
+    
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchWithAnimation();
+        }
+    }
+    
+    // Event listener dan resize canvas confetti
+    function init() {
+        cariBtn.addEventListener('click', searchWithAnimation);
+        resetBtn.addEventListener('click', resetSearch);
+        nisnInput.addEventListener('keypress', handleKeyPress);
+        resultCard.style.display = 'none';
+        errorBox.style.display = 'none';
+        window.addEventListener('resize', () => {
+            if (confettiCanvas) {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            }
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
+```
